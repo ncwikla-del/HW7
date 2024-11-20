@@ -55,7 +55,6 @@ public class ProblemSolutions {
             values[selectIndex] = values[i];
            // Put the selected element in the correct position.
             values[i] = temp;
-
         }
 
     } // End class selectionSort
