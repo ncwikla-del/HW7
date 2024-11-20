@@ -1,13 +1,16 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Nick Cwikla / COMP272-001
  *
  *   This java file contains the problem solutions for the methods selectionSort,
  *   mergeSortDivisibleByKFirst, asteroidsDestroyed, and numRescueCanoes methods.
  *
  ********************************************************************/
 
+
 import java.util.Arrays;
+
+
 
 public class ProblemSolutions {
 
@@ -33,14 +36,25 @@ public class ProblemSolutions {
     }
 
     public static void selectionSort(int[] values, boolean ascending ) {
-
+       // Acquire the length of the array.
         int n = values.length;
-
+       // Go through all elements present in the array.
         for (int i = 0; i < n - 1; i++) {
-
-            // YOU CODE GOES HERE -- COMPLETE THE INNER LOOP OF THIS
-            // "SELECTION SORT" ALGORITHM.
-            // DO NOT FORGET TO ADD YOUR NAME / SECTION ABOVE
+           // Initialize the selected index as current index.
+            int selectIndex = i;
+           // Go through and find the elements that are smaller or larger.
+            for (int j = i +1; j < n; j++) {
+                // selectIndex is updated for sorting order.
+                if (ascending ? values[j] < values[selectIndex] : values[j] > values[selectIndex]) {
+                    selectIndex = j;
+                }
+            }
+           // First element in the unsorted portion is swapped with smallest/largest element.
+            int temp = values[selectIndex];
+           // Current element moved to selected index.
+            values[selectIndex] = values[i];
+           // Put the selected element in the correct position.
+            values[i] = temp;
 
         }
 
@@ -92,17 +106,36 @@ public class ProblemSolutions {
 
     private void mergeDivisbleByKFirst(int arr[], int k, int left, int mid, int right)
     {
-        // YOUR CODE GOES HERE, THIS METHOD IS NO MORE THAN THE STANDARD MERGE PORTION
-        // OF A MERGESORT, EXCEPT THE NUMBERS DIVISIBLE BY K MUST GO FIRST WITHIN THE
-        // SEQUENCE PER THE DISCUSSION IN THE PROLOGUE ABOVE.
-        //
-        // NOTE: YOU CAN PROGRAM THIS WITH A SPACE COMPLEXITY OF O(1) OR O(N LOG N).
-        // AGAIN, THIS IS REFERRING TO SPACE COMPLEXITY. O(1) IS IN-PLACE, O(N LOG N)
-        // ALLOCATES AUXILIARY DATA STRUCTURES (TEMPORARY ARRAYS). IT WILL BE EASIER
-        // TO CODE WITH A SPACE COMPLEXITY OF O(N LOG N), WHICH IS FINE FOR PURPOSES
-        // OF THIS PROGRAMMING EXERCISES.
-
-        return;
+       // Create a temporary array for merging.
+        int[] temp = new int[right - left + 1];
+       // Initialize pointers for left, right, and temp array.
+        int i = left, j = mid + 1, k1 = 0;
+        // Merging of elements, divisible by k first.
+        while (i <= mid && j <= right) {
+            if (arr[i] % k == 0) {
+               // Insert element from left when divisible by k.
+                temp[k1++] = arr[i++];
+            } else if (arr[j] % k == 0) {
+               // Insert element from right when divisible by k.
+                temp[k1++] = arr[j++];
+            } else if (arr[i] < arr[j]) {
+               // Insert the smaller element that is found on left.
+                temp[k1++] = arr[i++];
+            } else {
+               // Otherwise, insert the smaller element from the right.
+                temp[k1++] = arr[j++];
+            }
+        }
+        // Insert the remaining elements from the left.
+        while (i <= mid) {
+            temp[k1++] = arr[i++];
+        }
+       // Insert the remaining elements from the right.
+        while (j <= right) {
+            temp[k1++] = arr[j++];
+        }
+        // Contents in merged temp are then copied over to the original array.
+        System.arraycopy(temp, 0, arr, left, temp.length);
 
     }
 
@@ -153,10 +186,24 @@ public class ProblemSolutions {
      */
 
     public static boolean asteroidsDestroyed(int mass, int[] asteroids) {
+       // Assume that every asteroid can be destroyed.
+        boolean destroyed = true;
+       // The planet's mass is initialized.
+        int totalMass = mass;
+       // Go through each asteroid in the array.
+        for(int asteroid : asteroids){
+           // Make sure planet's mass is enough for asteroid destruction.
+            if(totalMass >= asteroid){
+               //  Asteroids mass added to planet mass.
+                totalMass += asteroid;
+            } else{
+               // If planet's mass is not enough, destruction is false.
+                destroyed = false;
+            }
+        }
+       // Results returned whether asteroids were destroyed.
+        return destroyed;
 
-        // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT()
-
-        return false;
 
     }
 
@@ -191,10 +238,36 @@ public class ProblemSolutions {
      */
 
     public static int numRescueSleds(int[] people, int limit) {
-
-        // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT
-
-        return -1;
+       // 0 is returned if there are no people.
+        if (people.length == 0)
+            return 0;
+       // People array is sorted in ascending order.
+        Arrays.sort(people);
+       // Initialize the sled counter.
+        int sleds = 0;
+       // Pointer for lightest person within weight limit.
+        int left = 0;
+       // Pointer for heaviest person within weight limit.
+        int right = people.length - 1;
+       // Iterate through all the people.
+        while (left <= right) {
+           // Make sure lightest and heaviest can be together in the sled.
+            if(people[left] + people[right] <= limit) {
+               // Add the lightest person.
+                left++;
+               // Add the heaviest person.
+                right--;
+               // Increment the sled counter;
+                sleds++;
+            } else {
+               // If sled can't be shared, only heaviest is on sled.
+                right--;
+               // Increment the sled counter for single sledder.
+                sleds++;
+            }
+        }
+       // Total sleds used is returned.
+        return sleds;
 
     }
 
